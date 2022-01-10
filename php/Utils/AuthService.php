@@ -40,7 +40,7 @@ class AuthService
 
     }
   }
-  function Logout()
+  function logout()
   {
     Cookie::removeCookie($this->cookieKey);
 
@@ -56,21 +56,25 @@ class AuthService
         Session::setValue("UserId",$data->Id);
 
 
-        return true;
+
       }catch(Exception $exp)
       {
 
 
         Cookie::removeCookie($this->cookieKey);
+        http_response_code(401);
+        throw new Exception();
 
-        return false;
+
+
       }
 
 
 
     }else
     {
-      return false;
+      http_response_code(401);
+      throw new Exception();
     }
   }
 
