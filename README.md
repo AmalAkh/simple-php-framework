@@ -57,7 +57,7 @@ your-domain.ru/php/Test/showSmth
 Note that when you wrtting your own controllers after class declaration there should a line like this where variable must have name - controller.
 
 
-```
+```php
 $controller = new YourControllerClassName();
 ```
 
@@ -65,6 +65,8 @@ You can use TestController as an example
 
 ### Utility classes
 
+
+#### FileLoader
 There are some utility classes like AuthService and FileUploader
 
 Example of using FileUploader you can find in Controllers/TestController.php
@@ -76,7 +78,41 @@ FileLoader::loadFile({name of filed}, {path to save file});
 
 Note: path to save file should be written relitively to the index.php file
 
+#### AuthService
+
+AuthService is an utility which can help you to integrate authentication in your project without big problems
+
+Before using AuthService you have to create a table in your database with three required fileds - Login, Password and Id
+
+Firstly, you need to initialize AuthService and set database object(you can find it as $db in the arguments of a function which declares action), cookie key which will be used as name for cookie and table where data about your users will be storaged
+
+```php
+$auth_service = new AuthService($db, "auth_cookie_key", "users");
+```
+
+There are several methods which you can use
+Examples of them you can find in the TestController
+##### auth
 
 
+```php
+$auth_service->auth("login", "password");
+```
+It is obvious that this method can  authenticate user. 
+It returns 0,1 or 2. 
+0 means that login was not found.
+1 means that password is incorrect.
+2 means that user was successfully authenticated and your can use its user id from $_SESSION['UserId']
 
+##### checkAuth
 
+You can check if user is authenticate using this method. If user is not authenticated it will throw an exception and code 401
+```php
+$auth_service->checkAuth();
+```
+
+##### logout
+User can logout using this method
+```php
+$auth_service->logout();
+```
